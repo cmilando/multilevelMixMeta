@@ -8,21 +8,24 @@ library(tidyverse)
 
 head(school)
 
-# STANDARD META-ANALYSIS (NB: random NOT STRICTLY NEEDED HERE)
+# centering year
 yearcen2 <- with(school, year - mean(tapply(year, district, mean)))
 
+# mixmeta
 mod4 <- mixmeta(effect ~ yearcen2, var, random= ~ 1|district/study, data=school,
                 method="ml")
 
 mod4$random
 school
 
+# study-level blup
 bp0 <- as.data.frame(blup(mod4, se = T, level = 2)) ## level 2 = study
 bp0$study <- school$study
 bp0$district <- school$district
 bp0
 dim(bp0)
 
+# district-level blup
 bp1 <- as.data.frame(blup(mod4, se = T, level = 1)) ## level 1 = district
 bp1$district <- school$district
 bp1 <- unique(bp1)
