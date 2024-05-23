@@ -1,4 +1,7 @@
 ## shows how to get BLUP for multi-level models
+## references:
+## - https://researchonline.lshtm.ac.uk/id/eprint/4670887/1/2023_PHP_PhD_Sera_F.pdf
+## - https://github.com/gasparrini/Extended2stage/blob/main/03.doseresp.R
 
 library(mixmeta)
 library(tidyverse)
@@ -47,8 +50,23 @@ ggplot(school) +
                       ymin = blup - se, 
                       ymax = blup + se), color = 'blue')
 
+## https://github.com/gasparrini/Extended2stage/blob/main/03.doseresp.R
+## using this in crosspred means
+## (1) creating your onebasis
+## (2) settting vcov = T in blup
+## (3) crosspred()
 
+# LOAD AVERAGE TEMPERATURE DISTRIBUTION ACROSS CITIES
+## avgtmeansum <- read.csv("data/avgtmeansum.csv")
+## tmean <- avgtmeansum$tmean ## a vector of x values, where to predict
 
+# DEFINE SPLINE TRANSFORMATION ORIGINALLY USED IN FIRST-STAGE MODELS
+## knots <- tmean[avgtmeansum$perc %in% paste0(c(50,90), ".0%")]
+## bvar <- onebasis(tmean, fun="bs", degree=2, knots=knots)
 
+# PREDICT
+## cen <- tmean[which.min((bvar %*% blup[[1]]$blup))]
+##cp <- crosspred(bvar, coef=blup[[1]]$blup, vcov=blup[[1]]$vcov,
+##  model.link="log", at=tmean, cen=cen)
 
 
